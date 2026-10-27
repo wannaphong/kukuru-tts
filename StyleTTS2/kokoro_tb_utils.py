@@ -81,7 +81,12 @@ def extract_voicepack(model, root_path, device, n_samples=200):
     ).to(device)
     mel_mean, mel_std = -4, 4
 
-    wav_files = list(Path(root_path).rglob("*.wav"))
+    wav_files = []
+    import os
+    for dirpath, _, filenames in os.walk(root_path, followlinks=True):
+        for f in filenames:
+            if f.endswith(".wav"):
+                wav_files.append(Path(dirpath) / f)
     if not wav_files:
         logger.warning(f"extract_voicepack: no WAV files found in {root_path}")
         return None, 0.0, 0.0
